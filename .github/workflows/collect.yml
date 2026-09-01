@@ -1,0 +1,90 @@
+name: Daily news collection
+
+on:
+  schedule:
+    # 06:17 UTC every day. Off-the-hour on purpose: GitHub's scheduler is
+    # heavily contended at :00 and jobs get delayed.
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run_retention:
+        description: 'Preview the retention sweep without deleting anything'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Gather today's tech news
+        run: npm run collect
+
+      - name: Apply retention policy
+        run: |
+          if [ "${{ inputs.dry_run_retention }}" = "true" ]; then
+            node scripts/retention.mjs --dry-run
+          else
+            node scripts/retention.mjs
+          fi
+
+      - name: Write run summary
+        run: |
+          {
+            echo "## Daily quest log"
+            echo
+            node -e "
+              const i = require('./public/data/index.json');
+              console.log('| Metric | Value |');
+              console.log('|---|---|');
+              console.log(\`| Latest day | \${i.latest} |\`);
+              console.log(\`| Quests today | \${i.days[0]?.count ?? 0} |\`);
+              console.log(\`| Hot days | \${i.stats.daysTracked} / \${i.retention.dailyRetentionDays} |\`);
+              console.log(\`| Archived months | \${i.stats.monthsArchived} |\`);
+              console.log(\`| Store size | \${(i.stats.bytes/1024).toFixed(0)} KB / \${(i.stats.bytesLimit/1024/1024).toFixed(0)} MB |\`);
+            "
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit updated datastore
+        if: ${{ !inputs.dry_run_retention }}
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/data
+
+          if git diff --staged --quiet; then
+            echo "No data changes to commit."
+            exit 0
+          fi
+
+          COUNT=$(node -p "require('./public/data/index.json').days[0]?.count ?? 0")
+          DATE=$(node -p "require('./public/data/index.json').latest")
+          git commit -m "data: ${COUNT} quests for ${DATE}"
+          git push
+
+  deploy:
+    needs: collect
+    if: ${{ !inputs.dry_run_retention }}
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

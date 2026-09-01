@@ -1,0 +1,9 @@
+{
+  "$comment": "Storage control for the committed news datastore. Tuned so the repo stays small forever.",
+  "dailyRetentionDays": 45,
+  "archiveRetentionMonths": 18,
+  "maxArticlesPerDay": 60,
+  "archiveTopPerDay": 12,
+  "maxDataBytes": 26214400,
+  "dedupeLookbackDays": 7
+}

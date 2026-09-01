@@ -1,0 +1,207 @@
+/* ==========================================================================
+   Design tokens — "Monarch's System" palette.
+   Deep void blues, system-window cyan, monarch violet, S-rank gold.
+   ========================================================================== */
+
+:root {
+  /* Surfaces */
+  --void: #05060e;
+  --void-2: #080b1a;
+  --void-3: #0b1024;
+  --panel: rgba(11, 16, 38, 0.72);
+  --panel-solid: #0b1024;
+  --panel-raised: rgba(18, 25, 54, 0.82);
+
+  /* System chrome */
+  --cyan: #5ad8ff;
+  --cyan-dim: #2b9fd4;
+  --blue: #3b82f6;
+  --edge: rgba(90, 216, 255, 0.26);
+  --edge-strong: rgba(90, 216, 255, 0.65);
+
+  /* Monarch */
+  --violet: #8b5cf6;
+  --violet-bright: #a855f7;
+  --violet-deep: #4c1d95;
+
+  /* Ranks */
+  --rank-s: #ffcf6b;
+  --rank-a: #ff6b8b;
+  --rank-b: #a855f7;
+  --rank-c: #5ad8ff;
+  --rank-d: #4ade80;
+  --rank-e: #8b98c9;
+
+  /* Text */
+  --text: #e2e9ff;
+  --text-dim: #a6b2dd;
+  --muted: #6f7cae;
+  --faint: #48547e;
+
+  /* Effects */
+  --glow-cyan: 0 0 18px rgba(90, 216, 255, 0.35);
+  --glow-violet: 0 0 24px rgba(139, 92, 246, 0.4);
+  --glow-gold: 0 0 22px rgba(255, 207, 107, 0.45);
+
+  /* Type */
+  --font-display: 'Orbitron', 'Segoe UI', sans-serif;
+  --font-ui: 'Rajdhani', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+  /* Metrics */
+  --radius: 3px;
+  --gutter: clamp(16px, 3vw, 34px);
+  --shell: 1440px;
+}
+
+/* ---------- Reset ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.45);
+  color: #fff;
+}
+
+/* ---------- Scrollbars ---------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(90, 216, 255, 0.3) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(5, 6, 14, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--cyan-dim), var(--violet));
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--cyan), var(--violet-bright));
+}
+
+/* ==========================================================================
+   Background — nebula, mana grid, vignette. Fixed behind everything.
+   ========================================================================== */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.backdrop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1100px 720px at 12% -8%, rgba(76, 29, 149, 0.55), transparent 62%),
+    radial-gradient(900px 640px at 88% 2%, rgba(30, 64, 175, 0.42), transparent 60%),
+    radial-gradient(1000px 800px at 50% 108%, rgba(139, 92, 246, 0.24), transparent 65%),
+    linear-gradient(180deg, #05060e 0%, #070a18 45%, #05060e 100%);
+}
+
+/* Faint mana grid, fading toward the edges. */
+.backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(90, 216, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 216, 255, 0.07) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 78%);
+  animation: grid-drift 34s linear infinite;
+}
+
+@keyframes grid-drift {
+  to {
+    background-position: 64px 64px, 64px 64px;
+  }
+}
+
+.backdrop-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop::after {
+    animation: none;
+  }
+  .backdrop-canvas {
+    display: none;
+  }
+}

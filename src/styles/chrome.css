@@ -1,0 +1,285 @@
+/* ==========================================================================
+   System chrome — the reusable "System window" language.
+   Every panel in the app is one of these.
+   ========================================================================== */
+
+.sys-window {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(18, 26, 58, 0.78), rgba(8, 11, 26, 0.86));
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow:
+    inset 0 1px 0 rgba(146, 216, 255, 0.09),
+    inset 0 0 42px rgba(59, 130, 246, 0.07),
+    0 18px 48px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px) saturate(1.15);
+}
+
+/* Four glowing corner brackets, drawn with gradients (no extra markup). */
+.sys-window::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  --b: linear-gradient(var(--cyan), var(--cyan));
+  background:
+    var(--b) top left / 15px 2px no-repeat,
+    var(--b) top left / 2px 15px no-repeat,
+    var(--b) top right / 15px 2px no-repeat,
+    var(--b) top right / 2px 15px no-repeat,
+    var(--b) bottom left / 15px 2px no-repeat,
+    var(--b) bottom left / 2px 15px no-repeat,
+    var(--b) bottom right / 15px 2px no-repeat,
+    var(--b) bottom right / 2px 15px no-repeat;
+  filter: drop-shadow(0 0 5px rgba(90, 216, 255, 0.75));
+  opacity: 0.9;
+}
+
+/* Very faint CRT scanlines. */
+.sys-window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.022) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.6;
+}
+
+.sys-window--violet {
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+.sys-window--violet::before {
+  --b: linear-gradient(var(--violet-bright), var(--violet-bright));
+  filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.8));
+}
+
+.sys-window__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(90, 216, 255, 0.16);
+  background: linear-gradient(90deg, rgba(90, 216, 255, 0.09), transparent 70%);
+}
+
+.sys-window__title {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  text-shadow: 0 0 12px rgba(90, 216, 255, 0.55);
+}
+
+.sys-window__meta {
+  margin-left: auto;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.sys-window__body {
+  position: relative;
+  padding: 16px;
+  z-index: 1;
+}
+
+/* Small diamond bullet used before window titles. */
+.diamond {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  transform: rotate(45deg);
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+.diamond--violet {
+  background: var(--violet-bright);
+  box-shadow: 0 0 10px var(--violet-bright);
+}
+
+/* ==========================================================================
+   Rank badges — hexagonal, colour-coded, S-rank pulses.
+   ========================================================================== */
+
+.rank {
+  --rank-color: var(--rank-e);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 47px;
+  flex: none;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--rank-color);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--rank-color) 26%, transparent), rgba(5, 6, 14, 0.9));
+  text-shadow: 0 0 14px var(--rank-color);
+}
+
+/* Inner hex outline. */
+.rank::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: rgba(5, 6, 14, 0.72);
+  z-index: -1;
+}
+
+.rank[data-rank='S'] {
+  --rank-color: var(--rank-s);
+  animation: rank-pulse 2.6s ease-in-out infinite;
+}
+.rank[data-rank='A'] { --rank-color: var(--rank-a); }
+.rank[data-rank='B'] { --rank-color: var(--rank-b); }
+.rank[data-rank='C'] { --rank-color: var(--rank-c); }
+.rank[data-rank='D'] { --rank-color: var(--rank-d); }
+.rank[data-rank='E'] { --rank-color: var(--rank-e); }
+
+.rank--sm {
+  width: 28px;
+  height: 31px;
+  font-size: 12px;
+}
+
+@keyframes rank-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px rgba(255, 207, 107, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(255, 207, 107, 0.95));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rank[data-rank='S'] {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Chips, tags, buttons
+   ========================================================================== */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: rgba(90, 216, 255, 0.07);
+  border: 1px solid rgba(90, 216, 255, 0.2);
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.chip--topic {
+  color: var(--violet-bright);
+  background: rgba(139, 92, 246, 0.12);
+  border-color: rgba(139, 92, 246, 0.32);
+}
+
+.sys-btn {
+  position: relative;
+  padding: 8px 15px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: rgba(11, 16, 38, 0.7);
+  border: 1px solid rgba(90, 216, 255, 0.22);
+  border-radius: 2px;
+  transition: color 0.18s, border-color 0.18s, box-shadow 0.18s, background 0.18s;
+}
+
+.sys-btn:hover {
+  color: var(--cyan);
+  border-color: var(--edge-strong);
+  box-shadow: var(--glow-cyan);
+}
+
+.sys-btn[aria-pressed='true'],
+.sys-btn.is-active {
+  color: var(--void);
+  background: linear-gradient(135deg, var(--cyan), #93e6ff);
+  border-color: var(--cyan);
+  box-shadow: 0 0 22px rgba(90, 216, 255, 0.5);
+  text-shadow: none;
+}
+
+/* ==========================================================================
+   Stat bars
+   ========================================================================== */
+
+.bar {
+  position: relative;
+  height: 6px;
+  background: rgba(90, 216, 255, 0.1);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.bar__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--cyan-dim), var(--cyan));
+  box-shadow: 0 0 12px rgba(90, 216, 255, 0.6);
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bar__fill--violet {
+  background: linear-gradient(90deg, var(--violet-deep), var(--violet-bright));
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+}
+
+.bar__fill--gold {
+  background: linear-gradient(90deg, #b98a2a, var(--rank-s));
+  box-shadow: 0 0 12px rgba(255, 207, 107, 0.6);
+}
+
+.bar__fill--danger {
+  background: linear-gradient(90deg, #b3243f, #ff4d6d);
+  box-shadow: 0 0 12px rgba(255, 77, 109, 0.6);
+}
+
+/* Utility text styles */
+
+.label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mono-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
