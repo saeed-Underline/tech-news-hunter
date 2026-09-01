@@ -38,10 +38,13 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
-        env:
-          # Project pages are served from https://<user>.github.io/<repo>/
-          VITE_BASE: /${{ github.event.repository.name }}/
+        # Project pages are served from https://<user>.github.io/<repo>/.
+        # Derive the repo name from GITHUB_REPOSITORY rather than
+        # github.event.repository.name: this workflow is also reached via
+        # workflow_call from the scheduled collector, whose event payload does
+        # not reliably carry the repository object. An empty name there would
+        # produce a "//" base and 404 every asset.
+        run: VITE_BASE="/${GITHUB_REPOSITORY#*/}/" npm run build
 
       - name: Configure Pages
         uses: actions/configure-pages@v6
