@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-17T10:42:58.412Z",
-  "latest": "2026-10-17",
+  "generatedAt": "2026-10-18T11:03:22.405Z",
+  "latest": "2026-10-18",
   "sources": {
     "hackernews": {
       "name": "Hacker News",
@@ -33,12 +33,27 @@
   "stats": {
     "daysTracked": 46,
     "monthsArchived": 1,
-    "articlesLive": 2692,
-    "articlesArchived": 12,
-    "bytes": 1472819,
+    "articlesLive": 2688,
+    "articlesArchived": 24,
+    "bytes": 1473843,
     "bytesLimit": 26214400
   },
   "days": [
+    {
+      "date": "2026-10-18",
+      "file": "daily/2026-10-18.json",
+      "count": 56,
+      "topScore": 100,
+      "topRank": "S",
+      "bytes": 30400,
+      "sources": {
+        "hackernews": 25,
+        "wired": 10,
+        "techcrunch": 8,
+        "theverge": 10,
+        "arstechnica": 3
+      }
+    },
     {
       "date": "2026-10-17",
       "file": "daily/2026-10-17.json",
@@ -712,30 +727,15 @@
         "wired": 10,
         "techcrunch": 10
       }
-    },
-    {
-      "date": "2026-09-02",
-      "file": "daily/2026-09-02.json",
-      "count": 60,
-      "topScore": 100,
-      "topRank": "S",
-      "bytes": 32935,
-      "sources": {
-        "hackernews": 25,
-        "theverge": 10,
-        "wired": 7,
-        "techcrunch": 12,
-        "arstechnica": 6
-      }
     }
   ],
   "archives": [
     {
       "month": "2026-09",
       "file": "archive/2026-09.json",
-      "days": 1,
-      "count": 12,
-      "bytes": 3565
+      "days": 2,
+      "count": 24,
+      "bytes": 6989
     }
   ]
 }
