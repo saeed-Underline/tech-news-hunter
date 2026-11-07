@@ -49,6 +49,14 @@ export const RSS_SOURCES = [
     limit: 10,
     url: 'https://www.wired.com/feed/rss',
   },
+  {
+    id: 'johonotodai',
+    name: 'Joho no Todai (English)',
+    kind: 'rss',
+    weight: 1.0,
+    limit: 8,
+    url: 'https://joho-todai.com/en/rss/',
+  },
 ];
 
 export const ALL_SOURCES = [HN_SOURCE, ...RSS_SOURCES];
